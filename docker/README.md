@@ -80,4 +80,6 @@ $ chgrp 0 esdatadir
 ```
 
 * Create an encrypted Elasticsearch keystore
-* 
+  * 기본적으로 자동생성지만 암호화되진 않는다.
+  * keystore 암호화하기 
+   * config directory 
