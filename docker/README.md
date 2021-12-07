@@ -82,4 +82,12 @@ $ chgrp 0 esdatadir
 * Create an encrypted Elasticsearch keystore
   * 기본적으로 자동생성지만 암호화되진 않는다.
   * keystore 암호화하기 
-   * config directory 
+    * config directory 마운트
+    * elasticsearch-keystore 툴 사용
+    ```
+    docker run -it --rm \
+-v full_path_to/config:/usr/share/elasticsearch/config \
+docker.elastic.co/elasticsearch/elasticsearch:7.15.2 \
+bin/elasticsearch-keystore create -p
+    ```
+    * keystore의 secure settings 
