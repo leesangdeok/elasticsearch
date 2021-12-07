@@ -82,12 +82,33 @@ $ chgrp 0 esdatadir
 * Create an encrypted Elasticsearch keystore
   * 기본적으로 자동생성지만 암호화되진 않는다.
   * keystore 암호화하기 
-    * config directory 마운트
-    * elasticsearch-keystore 툴 사용
-    ```
+    * bind-mount the config directory (elasticsearch.keystore 직접 bind-mount 금지)
+    * elasticsearch-keystore 툴 사용 (옵션 create -p)
+    ```shell script
     docker run -it --rm \
--v full_path_to/config:/usr/share/elasticsearch/config \
-docker.elastic.co/elasticsearch/elasticsearch:7.15.2 \
-bin/elasticsearch-keystore create -p
+    -v full_path_to/config:/usr/share/elasticsearch/config \
+    docker.elastic.co/elasticsearch/elasticsearch:7.15.2 \
+    bin/elasticsearch-keystore create -p
     ```
-    * keystore의 secure settings 
+    * docker run 사용경 (keystore의 secure settings 추가 및 변경)
+    ```shell script
+    docker run -it --rm \
+    -v full_path_to/config:/usr/share/elasticsearch/config \
+    docker.elastic.co/elasticsearch/elasticsearch:7.15.2 \
+    bin/elasticsearch-keystore \
+    add my.secure.setting \
+    my.other.secure.setting
+    ```
+    * elasticsearch.keystore 파일이 생성되어있는 경우 업데이트 필요없고 컨테이너 실행 시 환경변수 KEYSTORE_PASSWORD를 설
+
+* Using custom Docker image
+  * Dockerfile
+  ```shell script
+  FROM docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+  COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
+  ```
+  * build & run
+  ```shell script
+  docker build --tag=elasticsearch-custom .
+  docker run -ti -v /usr/share/elasticsearch/data elasticsearch-custom
+  ```
